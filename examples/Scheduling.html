@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>Attendant Schedule</title>
+  <link rel="stylesheet" href="../slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="examples.css" type="text/css"/>
+</head>
+
+<script src="../lib/firebugx.js"></script>
+<script src="../lib/jquery-1.7.min.js"></script>
+<script src="../lib/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="../lib/jquery.event.drag-2.2.js"></script>
+<script src="../slick.core.js"></script>
+<script src="../slick.formatters.js"></script>
+<script src="../slick.editors.js"></script>
+<script src="../plugins/slick.cellrangeselector.js"></script>
+<script src="../plugins/slick.cellselectionmodel.js"></script>
+<script src="../plugins/slick.rowselectionmodel.js"></script>
+<script src="../plugins/slick.rowmovemanager.js"></script>
+<script src="../slick.grid.js"></script>
+<script src="../slick.groupitemmetadataprovider.js"></script>
+<script src="../slick.dataview.js"></script>
+<script src="Scheduling.js"></script>
+<body>
+<div>
+  <div style="width: 58%; float: left; border: 1px solid black; margin-right: 10px;">
+    <div style="margin: 10px 0px 10px 0px;">
+      <span>
+        <button onclick="addBoardCB()">Add Board</button>
+        <button onclick="deleteAllBoardCB()">Delete All Board</button>
+      </span>
+      <span id='totalBoardSpan' style="padding-left: 30px; font-weight: bold;">Total Boards : </span>
+      <span style="padding-left: 300px;">
+        <button onclick="expandAll()">Expand All</button>
+        <button onclick="collapseAll()">Collapse All</button>
+      </span>
+    </div>
+    <div id="boardGrid" style="width:99%;height:550px;"></div>
+  </div>
+  <div style="width: 40%; float: left; border: 1px solid black;">
+    <div style="margin: 10px 10px 10px 10px;">Available Attendants ---------------------------------------</div>
+    <div id="attendantGrid" style="width:100%;height:300px; margin-bottom: 10px; border-bottom: 1px solid black;"></div>
+    <div style="margin: 10px 10px 10px 10px;">Unassigned Rooms ---------------------------------------</div>
+    <div id="roomGrid" style="width:100%;height:250px;"></div>
+  </div>
+</div>
+</body>
+
+  
