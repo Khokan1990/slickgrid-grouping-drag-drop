@@ -11,32 +11,32 @@ var roomData = [];
 
 var boardGridColumns = [
     //{id: "boardNum", name: "", field: "boardNum", width: 70, minWidth: 50, },
-    {id: "room", name: "Room", field: "room", width: 70},
+    {id: "room", name: "Room", field: "room", width: 70, cssClass: "number-field-cl"},
     {id: "type", name: "Type", field: "type", width: 70},
-    {id: "vip", name: "VIP", field: "vip", width: 60},
-    {id: "status", name: "Status", field: "status", width: 70},
-    {id: "station", name: "Stn", field: "station", width: 70},
-    {id: "credits", name: "Credits", field: "credits", width: 100, groupTotalsFormatter: totalCreditsFormatter},
+    {id: "vip", name: "VIP", field: "vip", width: 70},
+    {id: "status", name: "Status", field: "status", width: 80},
+    {id: "station", name: "Stn", field: "station", width: 80},
+    {id: "credits", name: "Credits", field: "credits", width: 100, groupTotalsFormatter: totalCreditsFormatter, cssClass: "number-field-cl"},
     {id: "package", name: "Package", field: "package", width: 70},
     {id: "cleanTime", name: "Clean Time", field: "cleanTime", width: 70},
-    {id: "multiRoom", name: "Multi Rm", field: "multiRoom", width: 70}
+    {id: "multiRoom", name: "Multi Rm", field: "multiRoom", width: 90}
     ];
 var attedantGridColumns = [
-    {id: "pool", name: "Pool", field: "pool", width: 70, minWidth: 50},
+    {id: "pool", name: "Pool", field: "pool", width: 70, minWidth: 50, cssClass: "number-field-cl"},
     {id: "schedule", name: "Schedule", field: "schedule", width: 70, minWidth: 50},
     {id: "board", name: "Board", field: "board", width: 70, minWidth: 50},
     {id: "role", name: "Role", field: "role", width: 70, minWidth: 50},
-    {id: "agentId", name: "Id", field: "agentId", width: 70, minWidth: 50},
-    {id: "name", name: "Name", field: "name", width: 70, minWidth: 50}
+    {id: "agentId", name: "Id", field: "agentId", width: 70, minWidth: 50, cssClass: "number-field-cl"},
+    {id: "name", name: "Name", field: "name", width: 70, minWidth: 150}
     
     ];
 var roomGridColumns = [
-    {id: "room", name: "Room", field: "room", width: 70},
+    {id: "room", name: "Room", field: "room", width: 70, cssClass: "number-field-cl"},
     {id: "type", name: "Type", field: "type", width: 70},
     {id: "vip", name: "VIP", field: "vip", width: 70},
     {id: "status", name: "Status", field: "status", width: 70},
     {id: "station", name: "Stn", field: "station", width: 70},
-    {id: "credits", name: "Credits", field: "credits", width: 70},
+    {id: "credits", name: "Credits", field: "credits", width: 70, cssClass: "number-field-cl"},
     {id: "package", name: "Package", field: "package", width: 70},
     {id: "cleanTime", name: "Clean Time", field: "cleanTime", width: 70},
     {id: "multiRoom", name: "Multi Rm", field: "multiRoom", width: 70}
@@ -188,14 +188,14 @@ function setBoardGrouping()
       
       d["boardNum"] = boardArr[Math.round(Math.random() * 10)];
       d["id"] = "id-" + i + "-" + d["boardNum"];
-      d["room"] = Math.round(Math.random() * 30);
-      d["type"] = Math.round(Math.random() * 30);
-      d["vip"] = Math.round(Math.random() * 100);
-      d["status"] = "status";
-      d["station"] = "station";
+      d["room"] = Math.floor(Math.random()*(999-100+1)+100);
+      d["type"] = "KING";
+      d["vip"] = "";
+      d["status"] = "OD";
+      d["station"] = "1A";
       d["credits"] = 2;
-      d["package"] = "package";
-      d["cleanTime"] = "cleanTime";
+      d["package"] = "DSOC";
+      d["cleanTime"] = "12:00";
       d["multiRoom"] = "";
     }
 
@@ -209,12 +209,12 @@ function setBoardGrouping()
       var attendantD = (attendantData[i] = {});
   
       attendantD["id"] = "id_" + i;
-      attendantD["pool"] = Math.round(Math.random() * 30);
-      attendantD["schedule"] = Math.round(Math.random() * 30);
-      attendantD["board"] = Math.round(Math.random() * 100);
-      attendantD["role"] = "status";
-      attendantD["agentId"] = "1200";
-      attendantD["name"] = "Support";
+      attendantD["pool"] = 0;
+      attendantD["schedule"] = "";
+      attendantD["board"] = "";
+      attendantD["role"] = "R";
+      attendantD["agentId"] = Math.floor(Math.random()*(9999-1000+1)+1000);;
+      attendantD["name"] = "Attendant Name";
     }
     
     updateGridData(attendantDataView, attendantData);
@@ -226,14 +226,14 @@ function setBoardGrouping()
       var roomD = (roomData[i] = {});
   
       roomD["id"] = "id_" + i;
-      roomD["room"] = Math.round(Math.random() * 30);
-      roomD["type"] = Math.round(Math.random() * 30);
-      roomD["vip"] = Math.round(Math.random() * 100);
-      roomD["status"] = "status";
-      roomD["station"] = "station";
-      roomD["credits"] = "credits";
-      roomD["package"] = "package";
-      roomD["cleanTime"] = "cleanTime";
+      roomD["room"] = Math.floor(Math.random()*(999-100+1)+100);
+      roomD["type"] = "KING";
+      roomD["vip"] = "";
+      roomD["status"] = "OD";
+      roomD["station"] = "1A";
+      roomD["credits"] = 2;
+      roomD["package"] = "DSOC";
+      roomD["cleanTime"] = "12:00";
       roomD["multiRoom"] = "";
     }
     
@@ -263,7 +263,7 @@ function setBoardGrouping()
   {
       var draggedRows = null;
       var droppedRows = null;
-    grid.onDragInit.subscribe(function (e, dd) {
+      grid.onDragInit.subscribe(function (e, dd) {
         // prevent the grid from cancelling drag'n'drop by default
         e.stopImmediatePropagation();
       });
@@ -272,7 +272,7 @@ function setBoardGrouping()
         if (!cell) {
           return;
         }
-    
+
         dd.row = cell.row;
         draggedRows = dataView.getItemByIdx(dd.row);
     
@@ -332,6 +332,7 @@ function setBoardGrouping()
             draggedRows.boardNum = droppedBoardNum;
             dataView.deleteItem(draggedRows.id);
             dataView.insertItem(cell.row, draggedRows);
+            grid.setSelectedRows([cell.row]);
         }
         if (dd.mode != "recycle") {
           return;
@@ -400,7 +401,8 @@ function deleteBoardData(boardId)
   function addBoardCB()
   {
     boardNumGlobal = boardNumGlobal + 1;
-    let newBoard = {id: Math.round(Math.random() * 30), boardNum : boardNumGlobal};
+    let rowId = "id-" + Math.round(Math.random() * 30) + "-" + boardNumGlobal;
+    let newBoard = {id: rowId, boardNum : boardNumGlobal};
     boardDataView.addItem(newBoard);
     boardDataView.refresh();
   }
