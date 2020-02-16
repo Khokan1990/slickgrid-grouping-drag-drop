@@ -26,8 +26,8 @@ var attedantGridColumns = [
     {id: "schedule", name: "Schedule", field: "schedule", width: 70, minWidth: 50},
     {id: "board", name: "Board", field: "board", width: 70, minWidth: 50},
     {id: "role", name: "Role", field: "role", width: 70, minWidth: 50},
-    {id: "agentId", name: "Id", field: "agentId", width: 70, minWidth: 50, cssClass: "number-field-cl"},
-    {id: "name", name: "Name", field: "name", width: 70, minWidth: 150}
+    {id: "attendantId", name: "Id", field: "attendantId", width: 70, minWidth: 50, cssClass: "number-field-cl"},
+    {id: "attendantName", name: "Name", field: "attendantName", width: 70, minWidth: 150}
     
     ];
 var roomGridColumns = [
@@ -213,8 +213,8 @@ function setBoardGrouping()
       attendantD["schedule"] = "";
       attendantD["board"] = "";
       attendantD["role"] = "R";
-      attendantD["agentId"] = Math.floor(Math.random()*(9999-1000+1)+1000);;
-      attendantD["name"] = "Attendant Name";
+      attendantD["attendantId"] = Math.floor(Math.random()*(9999-1000+1)+1000);;
+      attendantD["attendantName"] = "Attendant Name";
     }
     
     updateGridData(attendantDataView, attendantData);
@@ -257,6 +257,7 @@ function setBoardGrouping()
           grid.invalidateRows(args.rows);
           grid.render();
         });
+        
         grid.setSelectionModel(new Slick.RowSelectionModel());
         registerDragNDrop(grid, dataView, gridId);
     }
@@ -284,6 +285,7 @@ function setBoardGrouping()
         e.stopImmediatePropagation();
       });
       grid.onDragStart.subscribe(function (e, dd) {
+        dd.available = ["boardGrid"];
         var cell = grid.getCellFromEvent(e);
         if (!cell) {
           return;
@@ -313,7 +315,14 @@ function setBoardGrouping()
         {
           case "attendantGrid":
           {
-            dragText = "Selected Attendant : " + draggedRows.id;
+            dragText = "Selected Attendant : " + draggedRows.attendantId + " - " + draggedRows.attendantName;
+            break;
+          }
+          case "roomGrid":
+          case "boardGrid":
+          {
+            dragText = "Selected Room(s) : " + draggedRows.room;
+            break;
           }
         }
 
@@ -333,8 +342,8 @@ function setBoardGrouping()
     
         dd.helper = proxy;
     
-        $(dd.available).css("background", "pink");
-    
+        //$(dd.available).css("background", "pink");
+        //$("#boardGrid").css("background", "pink");
         return proxy;
       });
     
@@ -347,22 +356,27 @@ function setBoardGrouping()
     
       grid.onDragEnd.subscribe(function (e, dd) {
         var cell = grid.getCellFromEvent(e);
-        droppedRows = dataView.getItemByIdx(cell.row);
-        //alert(JSON.stringify(draggedRows) + "--" + JSON.stringify(droppedRows));
-        //alert(draggedRows.id + " - " + droppedRows.id);
-        if (draggedRows.id != droppedRows.id)
+        console.log('gridId='+gridId);
+        if (cell)
         {
-            let droppedBoardNum = droppedRows.boardNum;
-            draggedRows.boardNum = droppedBoardNum;
-            dataView.deleteItem(draggedRows.id);
-            dataView.insertItem(cell.row, draggedRows);
-            grid.setSelectedRows([cell.row]);
+          droppedRows = dataView.getItemByIdx(cell.row);
+          //alert(JSON.stringify(draggedRows) + "--" + JSON.stringify(droppedRows));
+          //alert(draggedRows.id + " - " + droppedRows.id);
+          if (draggedRows.id != droppedRows.id)
+          {
+              let droppedBoardNum = droppedRows.boardNum;
+              draggedRows.boardNum = droppedBoardNum;
+              dataView.deleteItem(draggedRows.id);
+              dataView.insertItem(cell.row, draggedRows);
+              grid.setSelectedRows([cell.row]);
+          }
         }
         if (dd.mode != "recycle") {
           return;
         }
+
         dd.helper.remove();
-       // $(dd.available).css("background", "beige");
+        //$(dd.available).css("background", "beige");
       });
   }
 
