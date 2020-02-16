@@ -54,14 +54,14 @@ var roomGridColumns = [
         inlineFilters: true
       });
     attedantGrid = new Slick.Grid("#attendantGrid", attendantDataView, attedantGridColumns, gridCommonOptions);
-    wireTheEvents(attedantGrid, attendantDataView);
+    wireTheEvents(attedantGrid, attendantDataView, "attendantGrid");
     loadAttendantData(50);
 
     roomDataView = new Slick.Data.DataView({
         inlineFilters: true
       });
     roomGrid = new Slick.Grid("#roomGrid", roomDataView, roomGridColumns, gridCommonOptions);
-    wireTheEvents(roomGrid, roomDataView);
+    wireTheEvents(roomGrid, roomDataView, "roomGrid");
     loadRoomData(50);
 
   });
@@ -84,7 +84,7 @@ var roomGridColumns = [
     });
     boardGrid.onClick.subscribe(handleBoardGridClick);
 
-    wireTheEvents(boardGrid, boardDataView);
+    wireTheEvents(boardGrid, boardDataView, "boardGrid");
     loadBoardData(10);
   }
   function registerRowMove(grid, dataView)
@@ -240,26 +240,42 @@ function setBoardGrouping()
     updateGridData(roomDataView, roomData);
   }
 
-  function wireTheEvents(grid, dataView)
+  function wireTheEvents(grid, dataView, gridId)
   {
     if (null != dataView && null != grid)
     {
         dataView.onRowCountChanged.subscribe(function (e, args) {
             grid.updateRowCount();
             grid.render();
+            if (gridId == "boardGrid")
+            {
+              getAllBoardsCount(dataView);
+            }
           });
         
-        dataView.onRowsChanged.subscribe(function (e, args) {
-        grid.invalidateRows(args.rows);
-        grid.render();
+          dataView.onRowsChanged.subscribe(function (e, args) {
+          grid.invalidateRows(args.rows);
+          grid.render();
         });
         grid.setSelectionModel(new Slick.RowSelectionModel());
-        registerDragNDrop(grid, dataView);
-        //registerRowMove(grid, dataView);
+        registerDragNDrop(grid, dataView, gridId);
     }
   }
-
-  function registerDragNDrop(grid, dataView)
+  function getAllBoardsCount(dataView)
+  {
+    if (dataView)
+    {
+      let allBoard = [];
+      let allRowsData = dataView.getItems();
+      for (row of allRowsData)
+      {
+        allBoard.push(row.boardNum);
+      }
+      allBoard = $.unique(allBoard);
+      $("#totalBoardSpan").text("Total Boards : " + allBoard.length);
+    }
+  }
+  function registerDragNDrop(grid, dataView, gridId)
   {
       var draggedRows = null;
       var droppedRows = null;
@@ -292,7 +308,15 @@ function setBoardGrouping()
     
         dd.rows = selectedRows;
         dd.count = selectedRows.length;
-    
+        let dragText = "";
+        switch(gridId)
+        {
+          case "attendantGrid":
+          {
+            dragText = "Selected Attendant : " + draggedRows.id;
+          }
+        }
+
         var proxy = $("<span></span>")
             .css({
               position: "absolute",
@@ -304,7 +328,7 @@ function setBoardGrouping()
               "-moz-border-radius": "8px",
               "-moz-box-shadow": "2px 2px 6px silver"
             })
-            .text("Selected Attendant " + draggedRows.id)
+            .text(dragText)
             .appendTo("body");
     
         dd.helper = proxy;
