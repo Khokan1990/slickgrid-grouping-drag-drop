@@ -289,12 +289,17 @@ function setBoardGrouping()
       grid.onDragStart.subscribe(function (e, dd) {
         var cell = grid.getCellFromEvent(e);
         draggedRows = grid.getDataItem(cell.row);
-        let proxy = "";
+        let dragText = "";
         if (draggedRows["__group"])
         {
           if (e.target.id == "attendantSpan")
           {
-            
+            if (Slick.GlobalEditorLock.isActive()) {
+              return;
+            }
+            e.stopImmediatePropagation();
+            dd.mode = "validElement";
+            dragText = "Selected Attendant : " + $("#"+e.target.id).text();
           }
           else
           {
@@ -304,8 +309,13 @@ function setBoardGrouping()
         else
         {
           dd.row = cell.row;
-    
+        
+          if (Slick.GlobalEditorLock.isActive()) {
+            return;
+          }
+      
           e.stopImmediatePropagation();
+          dd.mode = "validElement";
       
           var selectedRows = grid.getSelectedRows();
       
@@ -316,7 +326,7 @@ function setBoardGrouping()
       
           dd.rows = selectedRows;
           dd.count = selectedRows.length;
-          let dragText = "";
+          
           switch(gridId)
           {
             case "attendantGrid":
@@ -331,29 +341,32 @@ function setBoardGrouping()
               break;
             }
           }
-  
-          proxy = $("<span></span>")
-              .css({
-                position: "absolute",
-                display: "inline-block",
-                padding: "4px 10px",
-                background: "#e0e0e0",
-                border: "1px solid gray",
-                "z-index": 99999,
-                "-moz-border-radius": "8px",
-                "-moz-box-shadow": "2px 2px 6px silver"
-              })
-              .text(dragText)
-              .appendTo("body");
         }
         
+
+        var proxy = $("<span></span>")
+            .css({
+              position: "absolute",
+              display: "inline-block",
+              padding: "4px 10px",
+              background: "#e0e0e0",
+              border: "1px solid gray",
+              "z-index": 99999,
+              "-moz-border-radius": "8px",
+              "-moz-box-shadow": "2px 2px 6px silver"
+            })
+            .text(dragText)
+            .appendTo("body");
+    
         dd.helper = proxy;
     
+        //$(dd.available).css("background", "pink");
+        //$("#boardGrid").css("background", "pink");
         return proxy;
       });
     
       grid.onDrag.subscribe(function (e, dd) {
-        if (dd.mode != "recycle") {
+        if (dd.mode != "validElement") {
           return;
         }
         dd.helper.css({top: e.pageY + 5, left: e.pageX + 5});
@@ -376,7 +389,7 @@ function setBoardGrouping()
               grid.setSelectedRows([cell.row]);
           }
         }
-        if (dd.mode != "recycle") {
+        if (dd.mode != "validElement") {
           return;
         }
 
