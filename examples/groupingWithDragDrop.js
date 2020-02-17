@@ -166,7 +166,8 @@ function setBoardGrouping()
         formatter: function (g) {
             let boardDeleteBtn = "<button id='board-" + g.value + "' class='boardDeleteCls'> Delete Board </button>";
             let boardNumberSpan = "<span style='float:left'>" + "Board Number : " + g.value + " "+ boardDeleteBtn +"</span>";
-            let attedantSpan = "<span id='attendantSpan' draggable='true' style='float:left; margin-left: 120px;'>" + "Attendant Span" + "</span>";
+            let attedantSpan = "<span id='attendantSpan' draggable='true' style='float:left; margin-left: 120px;'>"
+             + "Attendant - "+ Math.floor(Math.random()*(999-100+1)+100) + "</span>";
             let totalRoomsSpan = "<span style='float:right'>" + "Total Rooms : " + g.count + "</span>";
             
             let boardFormatter = boardNumberSpan + attedantSpan + totalRoomsSpan;
@@ -287,63 +288,67 @@ function setBoardGrouping()
       });
       grid.onDragStart.subscribe(function (e, dd) {
         var cell = grid.getCellFromEvent(e);
-        if (!cell) {
-          return;
-        }
-
-        dd.row = cell.row;
         draggedRows = grid.getDataItem(cell.row);
-    
-        if (Slick.GlobalEditorLock.isActive()) {
-          return;
-        }
-    
-        e.stopImmediatePropagation();
-        dd.mode = "recycle";
-    
-        var selectedRows = grid.getSelectedRows();
-    
-        if (!selectedRows.length || $.inArray(dd.row, selectedRows) == -1) {
-          selectedRows = [dd.row];
-          grid.setSelectedRows(selectedRows);
-        }
-    
-        dd.rows = selectedRows;
-        dd.count = selectedRows.length;
-        let dragText = "";
-        switch(gridId)
+        let proxy = "";
+        if (draggedRows["__group"])
         {
-          case "attendantGrid":
+          if (e.target.id == "attendantSpan")
           {
-            dragText = "Selected Attendant : " + draggedRows.attendantId + " - " + draggedRows.attendantName;
-            break;
+            
           }
-          case "roomGrid":
-          case "boardGrid":
+          else
           {
-            dragText = "Selected Room(s) : " + draggedRows.room;
-            break;
+            return;
           }
         }
-
-        var proxy = $("<span></span>")
-            .css({
-              position: "absolute",
-              display: "inline-block",
-              padding: "4px 10px",
-              background: "#e0e0e0",
-              border: "1px solid gray",
-              "z-index": 99999,
-              "-moz-border-radius": "8px",
-              "-moz-box-shadow": "2px 2px 6px silver"
-            })
-            .text(dragText)
-            .appendTo("body");
+        else
+        {
+          dd.row = cell.row;
     
+          e.stopImmediatePropagation();
+      
+          var selectedRows = grid.getSelectedRows();
+      
+          if (!selectedRows.length || $.inArray(dd.row, selectedRows) == -1) {
+            selectedRows = [dd.row];
+            grid.setSelectedRows(selectedRows);
+          }
+      
+          dd.rows = selectedRows;
+          dd.count = selectedRows.length;
+          let dragText = "";
+          switch(gridId)
+          {
+            case "attendantGrid":
+            {
+              dragText = "Selected Attendant : " + draggedRows.attendantId + " - " + draggedRows.attendantName;
+              break;
+            }
+            case "roomGrid":
+            case "boardGrid":
+            {
+              dragText = "Selected Room(s) : " + draggedRows.room;
+              break;
+            }
+          }
+  
+          proxy = $("<span></span>")
+              .css({
+                position: "absolute",
+                display: "inline-block",
+                padding: "4px 10px",
+                background: "#e0e0e0",
+                border: "1px solid gray",
+                "z-index": 99999,
+                "-moz-border-radius": "8px",
+                "-moz-box-shadow": "2px 2px 6px silver"
+              })
+              .text(dragText)
+              .appendTo("body");
+        }
+        
         dd.helper = proxy;
     
-        //$(dd.available).css("background", "pink");
-        //$("#boardGrid").css("background", "pink");
         return proxy;
       });
     
