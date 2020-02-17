@@ -85,7 +85,7 @@ var roomGridColumns = [
     boardGrid.onClick.subscribe(handleBoardGridClick);
 
     wireTheEvents(boardGrid, boardDataView, "boardGrid");
-    loadBoardData(10);
+    loadBoardData(100);
   }
   function registerRowMove(grid, dataView)
   {
@@ -166,9 +166,10 @@ function setBoardGrouping()
         formatter: function (g) {
             let boardDeleteBtn = "<button id='board-" + g.value + "' class='boardDeleteCls'> Delete Board </button>";
             let boardNumberSpan = "<span style='float:left'>" + "Board Number : " + g.value + " "+ boardDeleteBtn +"</span>";
+            let attedantSpan = "<span id='attendantSpan' draggable='true' style='float:left; margin-left: 120px;'>" + "Attendant Span" + "</span>";
             let totalRoomsSpan = "<span style='float:right'>" + "Total Rooms : " + g.count + "</span>";
             
-            let boardFormatter = boardNumberSpan + totalRoomsSpan;
+            let boardFormatter = boardNumberSpan + attedantSpan + totalRoomsSpan;
             return "<span style='font-weight: bold;'>" + boardFormatter + "</span>";
         },
         aggregators: [
@@ -285,14 +286,13 @@ function setBoardGrouping()
         e.stopImmediatePropagation();
       });
       grid.onDragStart.subscribe(function (e, dd) {
-        dd.available = ["boardGrid"];
         var cell = grid.getCellFromEvent(e);
         if (!cell) {
           return;
         }
 
         dd.row = cell.row;
-        draggedRows = dataView.getItemByIdx(dd.row);
+        draggedRows = grid.getDataItem(cell.row);
     
         if (Slick.GlobalEditorLock.isActive()) {
           return;
@@ -359,7 +359,7 @@ function setBoardGrouping()
         console.log('gridId='+gridId);
         if (cell)
         {
-          droppedRows = dataView.getItemByIdx(cell.row);
+          droppedRows = grid.getDataItem(cell.row);
           //alert(JSON.stringify(draggedRows) + "--" + JSON.stringify(droppedRows));
           //alert(draggedRows.id + " - " + droppedRows.id);
           if (draggedRows.id != droppedRows.id)

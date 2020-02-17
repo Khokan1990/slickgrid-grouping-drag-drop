@@ -143,4 +143,11 @@ li {
 {
   text-align: center;
 }
-
+#attendantSpan
+{
+  font-weight: bold;
+  color: red;
+}
+#attendantSpan:hover {
+  background-color: yellow;
+}
