@@ -166,8 +166,8 @@ function setBoardGrouping()
         formatter: function (g) {
             let boardDeleteBtn = "<button id='board-" + g.value + "' class='boardDeleteCls'> Delete Board </button>";
             let boardNumberSpan = "<span style='float:left'>" + "Board Number : " + g.value + " "+ boardDeleteBtn +"</span>";
-            let attedantSpan = "<span id='attendantSpan' draggable='true' style='float:left; margin-left: 120px;'>"
-             + "Attendant - "+ Math.floor(Math.random()*(999-100+1)+100) + "</span>";
+            let attedantSpan = "<span id='attendantSpan-"+ g.value +"' style='float:left; margin-left: 120px;'>"
+             + "Attendant - "+ g.value + "</span>";
             let totalRoomsSpan = "<span style='float:right'>" + "Total Rooms : " + g.count + "</span>";
             
             let boardFormatter = boardNumberSpan + attedantSpan + totalRoomsSpan;
@@ -292,14 +292,15 @@ function setBoardGrouping()
         let dragText = "";
         if (draggedRows["__group"])
         {
-          if (e.target.id == "attendantSpan")
+          let attendantSpanId = "attendantSpan-" + draggedRows.groupingKey;
+          if (e.target.id == attendantSpanId)
           {
             if (Slick.GlobalEditorLock.isActive()) {
               return;
             }
             e.stopImmediatePropagation();
             dd.mode = "validElement";
-            dragText = "Selected Attendant : " + $("#"+e.target.id).text();
+            dragText = "Selected Attendant : " + $("#"+attendantSpanId).text();
           }
           else
           {
