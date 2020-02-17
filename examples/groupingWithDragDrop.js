@@ -87,65 +87,6 @@ var roomGridColumns = [
     wireTheEvents(boardGrid, boardDataView, "boardGrid");
     loadBoardData(100);
   }
-  function registerRowMove(grid, dataView)
-  {
-    var moveRowsPlugin = new Slick.RowMoveManager({
-        cancelEditOnDrag: true,
-        dataView : dataView
-      });
-    
-      moveRowsPlugin.onBeforeMoveRows.subscribe(function (e, data) {
-        for (var i = 0; i < data.rows.length; i++) {
-          // no point in moving before or after itself
-          if (data.rows[i] == data.insertBefore || data.rows[i] == data.insertBefore - 1) {
-            e.stopPropagation();
-            return false;
-          }
-        }
-        return true;
-      });
-    
-      moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
-        var extractedRows = [], left, right;
-        var rows = args.rows;
-        var insertBefore = args.insertBefore;
-        //alert("test="+JSON.stringify(args.rowDataItem));
-        let data = dataView.getItems();///
-        left = data.slice(0, insertBefore);
-        right = data.slice(insertBefore, data.length);
-    
-        rows.sort(function(a,b) { return a-b; });
-    
-        for (var i = 0; i < rows.length; i++) {
-          extractedRows.push(data[rows[i]]);
-        }
-    
-        rows.reverse();
-    
-        for (var i = 0; i < rows.length; i++) {
-          var row = rows[i];
-          if (row < insertBefore) {
-            left.splice(row, 1);
-          } else {
-            right.splice(row - insertBefore, 1);
-          }
-        }
-    
-        data = left.concat(extractedRows.concat(right));
-    
-        var selectedRows = [];
-        for (var i = 0; i < rows.length; i++)
-          selectedRows.push(left.length + i);
-        
-        updateGridData(dataView, data);///
-        grid.resetActiveCell();
-        //grid.setData(data);
-        grid.setSelectedRows(selectedRows);
-        grid.render();
-      });
-    
-      grid.registerPlugin(moveRowsPlugin);
-  }
   function handleBoardGridClick(e, args)
   {
     var item = this.getDataItem(args.row);
@@ -314,7 +255,7 @@ function setBoardGrouping()
           if (Slick.GlobalEditorLock.isActive()) {
             return;
           }
-      
+
           e.stopImmediatePropagation();
           dd.mode = "validElement";
       
@@ -344,7 +285,6 @@ function setBoardGrouping()
           }
         }
         
-
         var proxy = $("<span></span>")
             .css({
               position: "absolute",
@@ -360,9 +300,7 @@ function setBoardGrouping()
             .appendTo("body");
     
         dd.helper = proxy;
-    
-        //$(dd.available).css("background", "pink");
-        //$("#boardGrid").css("background", "pink");
+
         return proxy;
       });
     
@@ -379,8 +317,6 @@ function setBoardGrouping()
         if (cell)
         {
           droppedRows = grid.getDataItem(cell.row);
-          //alert(JSON.stringify(draggedRows) + "--" + JSON.stringify(droppedRows));
-          //alert(draggedRows.id + " - " + droppedRows.id);
           if (draggedRows.id != droppedRows.id)
           {
               let droppedBoardNum = droppedRows.boardNum;
@@ -395,7 +331,6 @@ function setBoardGrouping()
         }
 
         dd.helper.remove();
-        //$(dd.available).css("background", "beige");
       });
   }
 
@@ -404,12 +339,7 @@ function setBoardGrouping()
     if (null != dataView)
     {
         dataView.beginUpdate();
-        //dataView.setFilter(myFilter);
-        /*dataView.setFilterArgs({
-        percentComplete: percentCompleteThreshold
-        });*/
         dataView.setItems(data);
-        //groupByDuration();
         dataView.endUpdate();
     }
   }
