@@ -160,7 +160,7 @@ function setBoardGrouping()
       attendantD["attendantName"] = "Attendant Name";
     }*/
     $.ajax({
-      url: "http://192.168.0.101:8090/api/attendant",
+      url: "https://192.168.0.101:8090/api/attendant",
       success: function( response ) {
         console.log( response ); 
         //alert("Response Data: " + response);
