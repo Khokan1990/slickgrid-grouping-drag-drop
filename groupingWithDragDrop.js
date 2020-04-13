@@ -8,6 +8,7 @@ var roomGrid;
 var boardData = [];
 var attendantData = [];
 var roomData = [];
+var getAttendantURL = "http://192.168.0.101:8090/api/attendant";
 
 var boardGridColumns = [
     //{id: "boardNum", name: "", field: "boardNum", width: 70, minWidth: 50, },
@@ -147,35 +148,39 @@ function setBoardGrouping()
   function loadAttendantData(count) 
   {
     attendantData = [];
-    /*for (let i = 0; i < count; i++) 
-    {
-      var attendantD = (attendantData[i] = {});
-  
-      attendantD["id"] = "id_" + i;
-      attendantD["pool"] = 0;
-      attendantD["schedule"] = "";
-      attendantD["board"] = "";
-      attendantD["role"] = "R";
-      attendantD["attendantId"] = Math.floor(Math.random()*(9999-1000+1)+1000);;
-      attendantD["attendantName"] = "Attendant Name";
-    }*/
+    let bError = false;
+
     $.ajax({
-      url: "https://192.168.0.101:8090/api/attendant",
+      url: getAttendantURL,
       success: function( response ) {
-        console.log( response ); 
-        //alert("Response Data: " + response);
         attendantData = response;
       },
       error : function(e){
-        alert("hi--"+ JSON.stringify(e));
+        bError = true;
       }
-    });
-    
-    setTimeout(function(){updateGridData(attendantDataView, attendantData);},1000);
+    });    
+    setTimeout(function(){
+      if (bError)
+      {
+        for (let i = 0; i < count; i++) 
+        {
+          var attendantD = (attendantData[i] = {});
+      
+          attendantD["id"] = "id_" + i;
+          attendantD["pool"] = 0;
+          attendantD["schedule"] = "";
+          attendantD["board"] = "";
+          attendantD["role"] = "R";
+          attendantD["attendantId"] = Math.floor(Math.random()*(9999-1000+1)+1000);;
+          attendantD["attendantName"] = "Attendant Name";
+        }
+      }
+      updateGridData(attendantDataView, attendantData);
+    },2000);
   }
   function loadRoomData(count) {
     roomData = [];
-    /*for (let i = 0; i < count; i++) 
+    for (let i = 0; i < count; i++) 
     {
       var roomD = (roomData[i] = {});
   
@@ -189,8 +194,8 @@ function setBoardGrouping()
       roomD["package"] = "DSOC";
       roomD["cleanTime"] = "12:00";
       roomD["multiRoom"] = "";
-    }*/
-    
+    }
+
     updateGridData(roomDataView, roomData);
   }
 
