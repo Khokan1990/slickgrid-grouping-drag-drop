@@ -8,7 +8,8 @@ var roomGrid;
 var boardData = [];
 var attendantData = [];
 var roomData = [];
-var getAttendantURL = "http://192.168.0.101:8090/api/attendant";
+var getAttendantURL1 = "http://192.168.0.101:8090/api/attendant";
+var getAttendantURL = "http://DragDrop-env.eba-wrzqbhjj.ap-south-1.elasticbeanstalk.com:8090/api/attendant";
 
 var boardGridColumns = [
     //{id: "boardNum", name: "", field: "boardNum", width: 70, minWidth: 50, },
